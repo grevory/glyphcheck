@@ -16,7 +16,7 @@
     "@emotion/styled": "^11.14.1",
     "@mui/material": "^9.0.1",
     "apca-w3": "^0.1.9",
-    "glyphwise-score": "file:../glyphwise-score",
+    "glyphwise-score": "github:grevory/glyphwise-score",
     "mixpanel-browser": "^2.80.0",
     "opentype.js": "^2.0.0",
     "react": "^19.2.6",
