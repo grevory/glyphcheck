@@ -1,4 +1,4 @@
-import React, { useState, useMemo, useCallback } from 'react';
+import React, { useState, useMemo, useCallback, useEffect } from 'react';
 import { ThemeProvider } from '@mui/material/styles';
 import CssBaseline from '@mui/material/CssBaseline';
 import Box from '@mui/material/Box';
@@ -61,6 +61,10 @@ export default function App() {
 
   const s = state;
 
+  useEffect(() => {
+    try { window.history.replaceState(null, '', '?c=' + encodeState(s)); } catch { /* ignore */ }
+  }, [s]);
+
   const handleUpload = async (file: File) => {
     if (s.activeFonts.length >= MAX_FONTS) {
       setSnack('Comparison set is full — remove a font first.');
@@ -92,15 +96,13 @@ export default function App() {
   };
 
   const handleShare = async () => {
-    const enc = encodeState(s);
-    const url = window.location.origin + window.location.pathname + '?c=' + enc;
+    const url = window.location.href;
     try {
       await navigator.clipboard.writeText(url);
-      setSnack('Comparison link copied to clipboard');
+      setSnack('Permalink copied to clipboard');
     } catch {
-      setSnack('Comparison encoded in the URL');
+      setSnack('Permalink is in the address bar');
     }
-    try { window.history.replaceState(null, '', '?c=' + enc); } catch { /* ignore */ }
     track('comparison_run', { tab: s.tab });
   };
 
