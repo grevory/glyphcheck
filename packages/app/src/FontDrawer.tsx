@@ -222,7 +222,7 @@ export function FontDrawer({ s, set, onUpload, onMetricsReady }: FontDrawerProps
 
       {benches.length > 0 && (
         <Box sx={{ mt: 2.5 }}>
-          <Overline sx={{ mb: 1, display: 'block' }}>Benchmarks · always available</Overline>
+          <Overline sx={{ mb: 1, display: 'block' }}>Legibility benchmarks</Overline>
           <Stack direction="row" spacing={0.75} sx={{ flexWrap: 'wrap' }}>
             {benches.map((f) => (
               <Chip key={f.id} label={f.name} size="small" onClick={() => addBuiltin(f.id)}

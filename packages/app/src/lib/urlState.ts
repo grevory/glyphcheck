@@ -15,7 +15,7 @@ export interface AppState {
 }
 
 export const DEFAULT_STATE: AppState = {
-  activeFonts: ['noto-sans', 'atkinson', 'lexend'],
+  activeFonts: ['atkinson', 'lexend'],
   tab: 0,
   size: 18,
   weight: 400,
