@@ -71,12 +71,12 @@ export function ContrastCard({ s }: ContrastCardProps) {
             </Mono>
             <Typography sx={{ fontSize: 11.5, color: 'text.secondary' }}>WCAG&nbsp;2.2 ratio</Typography>
           </Stack>
-          <Stack direction="row" spacing={0.75} sx={{ mt: 1.25, flexWrap: 'wrap' }}>
+          <Box sx={{ mt: 1.25, display: 'flex', flexWrap: 'wrap', gap: 0.75 }}>
             <PassChip ok={rep.aaBody} label="AA body" />
             <PassChip ok={rep.aaaBody} label="AAA body" />
             <PassChip ok={rep.aaLarge} label="AA large" />
             <PassChip ok={rep.nonText} label="UI 3:1" />
-          </Stack>
+          </Box>
         </Box>
       </Paper>
 
