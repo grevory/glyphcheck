@@ -3,7 +3,6 @@ import AppBar from '@mui/material/AppBar';
 import Toolbar from '@mui/material/Toolbar';
 import Box from '@mui/material/Box';
 import Button from '@mui/material/Button';
-import Chip from '@mui/material/Chip';
 import IconButton from '@mui/material/IconButton';
 import Tooltip from '@mui/material/Tooltip';
 import { Logo } from './components/Logo';
@@ -23,14 +22,7 @@ export function Header({ mode, onToggleMode, onShare, onHowItWorks }: HeaderProp
       <Toolbar sx={{ gap: 1.5, minHeight: { xs: 60, md: 64 } }}>
         <Logo />
         <Box sx={{ flex: 1 }} />
-        <Tooltip arrow title="Everything runs client-side in your browser. No fonts, colors or text are sent to a server; only anonymous usage events.">
-          <Chip size="small" variant="outlined" label="Runs in your browser"
-            sx={{
-              display: { xs: 'none', sm: 'flex' },
-              fontFamily: "'IBM Plex Mono', monospace", fontSize: 10.5,
-              color: 'text.secondary', borderColor: 'divider', cursor: 'help',
-            }} />
-        </Tooltip>
+
         <Tooltip arrow title="How Glyphcheck works — scoring methodology and usage guide">
           <IconButton onClick={onHowItWorks} sx={{ color: 'text.secondary' }}>
             <IconQuestion size={20} />
