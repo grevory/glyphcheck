@@ -5,7 +5,7 @@ import Box from '@mui/material/Box';
 import IconButton from '@mui/material/IconButton';
 import Tooltip from '@mui/material/Tooltip';
 import { Logo } from './components/Logo';
-import { IconLink, IconSun, IconMoon, IconQuestion } from './icons';
+import { IconShare, IconSun, IconMoon, IconQuestion } from './icons';
 
 interface HeaderProps {
   mode: 'light' | 'dark';
@@ -22,14 +22,14 @@ export function Header({ mode, onToggleMode, onShare, onHowItWorks }: HeaderProp
         <Logo />
         <Box sx={{ flex: 1 }} />
 
-        <Tooltip arrow title="How Glyphcheck works — scoring methodology and usage guide">
+        <Tooltip arrow title="How Glyphcheck works: scoring methodology and usage guide">
           <IconButton onClick={onHowItWorks} sx={{ color: 'text.secondary' }}>
             <IconQuestion size={20} />
           </IconButton>
         </Tooltip>
         <Tooltip arrow title="Copy share link">
           <IconButton onClick={onShare} sx={{ color: 'text.secondary' }}>
-            <IconLink size={20} />
+            <IconShare size={20} />
           </IconButton>
         </Tooltip>
         <Tooltip arrow title={mode === 'dark' ? 'Switch to light' : 'Switch to dark'}>

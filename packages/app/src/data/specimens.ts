@@ -34,6 +34,6 @@ export const NUMBER_ROWS = [
 export const SPECIMEN_PRESETS: Record<string, string> = {
   pangram: 'Sphinx of black quartz, judge my vow. 0123456789',
   paragraph:
-    'Legibility is how easily one letter is told from another; readability is how easily words and sentences flow. A good interface font keeps the 0 from the O, the 1 from the l, and the rn from the m — at 13px, on a Tuesday, in a hurry.',
-  otp: 'Code: 8 0 G 5 — I l 1 O 0',
+    'Legibility is how easily one letter is told from another; readability is how easily words and sentences flow. A good interface font keeps the 0 from the O, the 1 from the l, and the rn from the m. At 13px, on a Tuesday, in a hurry.',
+  otp: 'Code: 8 0 G 5 / I l 1 O 0',
 };

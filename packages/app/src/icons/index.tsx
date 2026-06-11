@@ -55,6 +55,13 @@ export const IconLink = (p: SvgProps) => (
   </Svg>
 );
 
+export const IconShare = (p: SvgProps) => (
+  <Svg {...p} stroke="currentColor" sw={2}>
+    <path d="M12 14V4M8.5 7.5L12 4l3.5 3.5" />
+    <path d="M5 13v5.5A1.5 1.5 0 0 0 6.5 20h11a1.5 1.5 0 0 0 1.5-1.5V13" />
+  </Svg>
+);
+
 export const IconUpload = (p: SvgProps) => (
   <Svg {...p} stroke="currentColor" sw={2}>
     <path d="M12 15V4M8.5 7.5L12 4l3.5 3.5" />

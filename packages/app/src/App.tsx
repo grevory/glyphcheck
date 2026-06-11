@@ -53,7 +53,9 @@ export default function App() {
     stateFromUrl(new Set(Object.keys(FONT_BY_ID)))
   );
   const [snack, setSnack] = useState('');
-  const [howItWorksOpen, setHowItWorksOpen] = useState(false);
+  const [howItWorksOpen, setHowItWorksOpen] = useState(
+    () => localStorage.getItem('glyphcheck.helpSeen') !== 'true'
+  );
   const theme = useMemo(() => buildTheme(mode), [mode]);
 
   const set = useCallback((patch: Partial<AppState>) => {
@@ -83,7 +85,7 @@ export default function App() {
 
   const handleUpload = async (file: File) => {
     if (s.activeFonts.length >= MAX_FONTS) {
-      setSnack('Comparison set is full — remove a font first.');
+      setSnack('Comparison set is full. Remove a font first.');
       return;
     }
     try {
@@ -98,7 +100,7 @@ export default function App() {
         css: `'${fam}', sans-serif`,
         cat: 'Uploaded',
         bench: false,
-        blurb: 'Your uploaded font — loaded locally, nothing left your device.',
+        blurb: 'Your uploaded font, loaded locally. Nothing left your device.',
         metrics: null,
         feat: { tnum: false, zero: false, onum: false, slashDefault: false },
       };
@@ -183,7 +185,10 @@ export default function App() {
         </Box>
       </Box>
 
-      <HowItWorksDrawer open={howItWorksOpen} onClose={() => setHowItWorksOpen(false)} />
+      <HowItWorksDrawer open={howItWorksOpen} onClose={() => {
+          localStorage.setItem('glyphcheck.helpSeen', 'true');
+          setHowItWorksOpen(false);
+        }} />
 
       <Snackbar open={!!snack} autoHideDuration={3200} onClose={() => setSnack('')}
         message={snack} anchorOrigin={{ vertical: 'bottom', horizontal: 'center' }} />

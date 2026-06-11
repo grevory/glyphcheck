@@ -102,7 +102,7 @@ export function contrastMetric(ctx: ScoreContext): MetricResult | null {
     weight: METRIC_WEIGHTS.colorContrast,
     status,
     detail:
-      `WCAG 2.x ratio ${w.ratio.toFixed(2)}:1 — ` +
+      `WCAG 2.x ratio ${w.ratio.toFixed(2)}:1, ` +
       `${w.aa ? 'passes' : 'fails'} AA, ${w.aaa ? 'passes' : 'fails'} AAA ` +
       `for ${w.largeText ? 'large' : 'normal'} text.${apcaNote}`,
   };

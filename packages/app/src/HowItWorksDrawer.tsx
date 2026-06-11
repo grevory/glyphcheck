@@ -20,7 +20,7 @@ const METRICS = [
     label: 'Character disambiguation',
     weight: '30%',
     color: 'primary' as const,
-    how: 'Each pair of commonly-confused glyphs (I/l/1, O/0, b/d, …) is rasterized at 64 px and compared pixel-by-pixel. The score is driven by the worst-confused pair — a font is only as readable as its most ambiguous pair.',
+    how: 'Each pair of commonly-confused glyphs (I/l/1, O/0, b/d, …) is rasterized at 64 px and compared pixel-by-pixel. The score is driven by the worst-confused pair; a font is only as readable as its most ambiguous pair.',
     good: 'Distinct serifs or open apertures that clearly separate I from l from 1.',
     bad: 'Geometric sans-serifs where I, l, and 1 look nearly identical.',
   },
@@ -29,7 +29,7 @@ const METRICS = [
     label: 'x-height ratio',
     weight: '20%',
     color: 'primary' as const,
-    how: 'Measured as x-height ÷ cap height from the font\'s OS/2 table (or bounding boxes). Scores peak in the 0.62–0.76 range — tall enough to read at small sizes, not so tall that ascenders and descenders crowd each other.',
+    how: 'Measured as x-height ÷ cap height from the font\'s OS/2 table (or bounding boxes). Scores peak in the 0.62–0.76 range: tall enough to read at small sizes, not so tall that ascenders and descenders crowd each other.',
     good: 'Ratio 0.62–0.76 (e.g. most modern text fonts).',
     bad: 'Very low ratio (≤ 0.48, e.g. some display faces) or extreme tall x-height (> 0.80).',
   },
@@ -59,10 +59,10 @@ All metric scores are normalized 0–1 before weighting; the overall is scaled t
 
 const GRADE_BANDS = [
   { grade: 'A', range: '85–100', desc: 'Excellent across all measured dimensions.' },
-  { grade: 'B', range: '70–84', desc: 'Strong — minor gaps in one or two areas.' },
-  { grade: 'C', range: '55–69', desc: 'Adequate — noticeable weaknesses.' },
-  { grade: 'D', range: '40–54', desc: 'Poor — significant accessibility concerns.' },
-  { grade: 'F', range: '0–39', desc: 'Very poor — failing on multiple dimensions.' },
+  { grade: 'B', range: '70–84', desc: 'Strong, with minor gaps in one or two areas.' },
+  { grade: 'C', range: '55–69', desc: 'Adequate, with noticeable weaknesses.' },
+  { grade: 'D', range: '40–54', desc: 'Poor, with significant accessibility concerns.' },
+  { grade: 'F', range: '0–39', desc: 'Very poor, failing on multiple dimensions.' },
 ];
 
 export function HowItWorksDrawer({ open, onClose }: Props) {
@@ -88,7 +88,7 @@ export function HowItWorksDrawer({ open, onClose }: Props) {
           controls bar. Choose a tab to inspect a specific aspect of legibility: glyph disambiguation,
           confusable strings, side-by-side comparison, stacked specimen, or numeral alignment.
           The right panel shows per-font scores that update as you change colors and fonts.
-          You can upload your own font files — nothing leaves your browser.
+          You can upload your own font files; nothing leaves your browser.
         </Typography>
 
         <Divider sx={{ mb: 2.5 }} />
@@ -173,7 +173,7 @@ export function HowItWorksDrawer({ open, onClose }: Props) {
             'These are heuristics, not a validated standard or certification.',
             'Color contrast (WCAG 2.x) is the only standards-based metric here.',
             'No automated score replaces testing with real users and assistive technology.',
-            'The legibility rail uses a separate older scoring model from the per-font score cards — they will be unified in a future release.',
+            'The legibility rail uses a separate older scoring model from the per-font score cards; they will be unified in a future release.',
           ].map((c, i) => (
             <Typography key={i} variant="body2" sx={{ color: 'text.secondary', fontSize: 12.5, lineHeight: 1.65 }}>
               · {c}

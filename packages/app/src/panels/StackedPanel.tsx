@@ -16,7 +16,7 @@ export function StackedPanel({ s, registry }: Props) {
 
   return (
     <Surface s={s}>
-      <FgLabel s={s} sx={{ mb: 0.5 }}>Stacked specimens — same line, aligned</FgLabel>
+      <FgLabel s={s} sx={{ mb: 0.5 }}>Stacked specimens, same line, aligned</FgLabel>
       <Typography sx={{ fontSize: 13, color: s.fg, opacity: 0.6, mb: 2, maxWidth: 560 }}>
         The identical line set in each font and stacked, so differences in x-height, width and weight line up vertically.
       </Typography>
