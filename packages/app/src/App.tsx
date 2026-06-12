@@ -11,6 +11,7 @@ import { buildTheme } from './theme';
 import { Header } from './Header';
 import { HowItWorksDrawer } from './HowItWorksDrawer';
 import { FontDrawer } from './FontDrawer';
+import { MobileFontBar } from './MobileFontBar';
 import { SpecimenField } from './SpecimenField';
 import { ControlsBar } from './rail/ControlsBar';
 import { ScoresRail } from './rail/ScoresRail';
@@ -148,6 +149,9 @@ export default function App() {
 
           {/* center: workspace */}
           <Box sx={{ flex: 1, minWidth: 0, overflowY: 'auto', bgcolor: 'background.default' }}>
+            <Box sx={{ display: { xs: 'block', md: 'none' } }}>
+              <MobileFontBar activeFonts={s.activeFonts} set={set} registry={registry} onMetricsReady={handleMetricsReady} />
+            </Box>
             <Box sx={{ p: { xs: 2, md: 2.5 }, display: 'flex', flexDirection: 'column', gap: 2, maxWidth: 1280, mx: 'auto' }}>
               <ControlsBar s={s} set={set} onReset={handleReset} />
 
