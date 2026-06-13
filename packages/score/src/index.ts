@@ -14,7 +14,7 @@ export type {
   OpenTypeFont,
 } from './types.js';
 
-export { scoreFont, composeScore, grade, CAVEATS } from './score.js';
+export { scoreFont, composeScore, grade, CAVEATS, SCENARIO_WEIGHTS } from './score.js';
 
 export {
   parseHex,

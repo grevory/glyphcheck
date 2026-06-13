@@ -15,6 +15,12 @@ import { scoreDisambiguation } from './metrics/disambiguation.js';
 import { contrastMetric } from './contrast.js';
 import { METRIC_WEIGHTS, naMetric } from './metrics/common.js';
 
+/** Weights for the scenario score blend (typeface + contrast). Must sum to 1. */
+export const SCENARIO_WEIGHTS = {
+  typeface: 0.7,
+  contrast: 0.3,
+} as const;
+
 export const CAVEATS: string[] = [
   'Heuristic, not a certification. The glyph-legibility metrics are informed estimates, not a validated standard.',
   'The color-contrast metric is standards-based (WCAG 2.x); the glyph metrics are not.',
@@ -71,8 +77,10 @@ export function scoreFont(font: OpenTypeFont, ctx: ScoreContext = {}): FontAcces
   const contrastResult = contrastMetric(ctx);
   let scenario: ScenarioScore | null = null;
   if (contrastResult) {
-    // Scenario score: 70% typeface + 30% contrast (contrast weight matches METRIC_WEIGHTS.colorContrast / total)
-    const scenarioOverall = Math.round(0.7 * typefaceOverall + 0.3 * (contrastResult.score ?? 0) * 100);
+    const scenarioOverall = Math.round(
+      SCENARIO_WEIGHTS.typeface * typefaceOverall +
+      SCENARIO_WEIGHTS.contrast * (contrastResult.score ?? 0) * 100,
+    );
     scenario = {
       overall: scenarioOverall,
       grade: grade(scenarioOverall),

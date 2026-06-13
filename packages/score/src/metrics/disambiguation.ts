@@ -48,7 +48,7 @@ function diffToScore(worst: number, mean: number): number {
   return Math.max(0, Math.min(1, blended * 1.6));
 }
 
-/** Sizes to test. Using multiple sizes guards against hinting/anti-aliasing artifacts at any single size. */
+/** Multiple sizes guard against hinting/anti-aliasing artifacts at any single size. */
 const RASTER_SIZES = [12, 16, 32, 64];
 
 export function scoreDisambiguation(
