@@ -43,26 +43,26 @@ const METRICS = [
     bad: 'Proportional digits only, no "tnum" feature, no slashed zero.',
   },
   {
-    id: 'disambiguation',
+    id: 'contrast',
     label: 'Color contrast',
-    weight: '30%',
+    weight: '30% of scenario score',
     color: 'secondary' as const,
-    how: 'Standards-based: WCAG 2.x relative luminance contrast ratio for the foreground/background colors you set. Only included in the overall score when colors are configured.',
+    how: 'Standards-based: WCAG 2.x relative luminance contrast ratio for the foreground/background colors you set. This is a scenario property — it reflects your color choice, not the font itself. Only included in the scenario score when colors are configured.',
     good: 'AA ≥ 4.5 : 1 (normal text), AAA ≥ 7 : 1.',
     bad: 'Below 3 : 1 is difficult for many low-vision users.',
   },
 ];
 
-const WEIGHTS_NOTE = `Overall = Σ (metric_score × weight) / Σ weights, over metrics that ran.
-Color contrast is only included when foreground + background colors are set.
-All metric scores are normalized 0–1 before weighting; the overall is scaled to 0–100.`;
+const WEIGHTS_NOTE = `Typeface score = Σ (metric_score × weight) / Σ weights, over typeface metrics that ran.
+Scenario score = 70% typeface + 30% color contrast (only when colors are set).
+All metric scores are normalized 0–1 before weighting; both scores are scaled to 0–100.`;
 
 const GRADE_BANDS = [
-  { grade: 'A', range: '85–100', desc: 'Excellent across all measured dimensions.' },
-  { grade: 'B', range: '70–84', desc: 'Strong, with minor gaps in one or two areas.' },
-  { grade: 'C', range: '55–69', desc: 'Adequate, with noticeable weaknesses.' },
-  { grade: 'D', range: '40–54', desc: 'Poor, with significant accessibility concerns.' },
-  { grade: 'F', range: '0–39', desc: 'Very poor, failing on multiple dimensions.' },
+  { grade: 'A', range: '85–100', desc: 'Very low legibility risk in this setup.' },
+  { grade: 'B', range: '70–84', desc: 'Strong, with minor issues to review.' },
+  { grade: 'C', range: '55–69', desc: 'Usable, but has noticeable weak spots.' },
+  { grade: 'D', range: '40–54', desc: 'Risky for accessibility-sensitive use.' },
+  { grade: 'F', range: '0–39', desc: 'High risk; review carefully before using.' },
 ];
 
 export function HowItWorksDrawer({ open, onClose }: Props) {
@@ -170,10 +170,10 @@ export function HowItWorksDrawer({ open, onClose }: Props) {
         </Typography>
         <Stack spacing={0.75}>
           {[
-            'These are heuristics, not a validated standard or certification.',
-            'Color contrast (WCAG 2.x) is the only standards-based metric here.',
+            'These are heuristics, not a validated standard or certification. This is a legibility-risk score, not an accessibility certification.',
+            'Color contrast (WCAG 2.x) is the only standards-based metric here. The typeface metrics are automated legibility estimates.',
+            'Color contrast is a property of your color choice, not the font. A font cannot pass or fail on contrast alone.',
             'No automated score replaces testing with real users and assistive technology.',
-            'The legibility rail uses a separate older scoring model from the per-font score cards; they will be unified in a future release.',
           ].map((c, i) => (
             <Typography key={i} variant="body2" sx={{ color: 'text.secondary', fontSize: 12.5, lineHeight: 1.65 }}>
               · {c}

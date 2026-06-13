@@ -55,6 +55,7 @@ export interface MeasureResult {
   metrics: FontMetrics;
   feat: FontFeatures;
   overall: number;
+  typefaceScore: { overall: number; grade: string };
 }
 
 const _cache = new Map<string, Promise<MeasureResult>>();
@@ -66,11 +67,12 @@ export function measureGoogleFont(family: string): Promise<MeasureResult> {
     const woffUrl = await resolveWoffUrl(family);
     const buffer = await fetch(woffUrl).then((r) => r.arrayBuffer());
     const font = opentype.parse(buffer);
-    const scored = scoreFont(font, { rasterize: canvasRasterizer });
+    const { typeface } = scoreFont(font, { rasterize: canvasRasterizer });
     return {
-      metrics: mapMetrics(scored.metrics),
+      metrics: mapMetrics(typeface.metrics),
       feat: mapFeatures(font),
-      overall: scored.overall,
+      overall: typeface.overall,
+      typefaceScore: { overall: typeface.overall, grade: typeface.grade },
     };
   })();
 

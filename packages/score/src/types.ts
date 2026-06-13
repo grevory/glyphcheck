@@ -53,11 +53,38 @@ export interface Bitmap {
 
 export type Grade = 'A' | 'B' | 'C' | 'D' | 'F';
 
-export interface FontAccessibilityScore {
-  /** 0..100 weighted heuristic score over applicable metrics. */
+/**
+ * Score derived from typeface properties alone (disambiguation, x-height,
+ * numerals). Independent of color and rendering context.
+ */
+export interface TypefaceScore {
+  /** 0..100 weighted heuristic score over applicable typeface metrics. */
   overall: number;
   grade: Grade;
   metrics: MetricResult[];
+}
+
+/**
+ * Score for a specific rendering scenario: typeface properties combined with
+ * color contrast, size, and weight context. Only available when colors are
+ * provided in ScoreContext.
+ */
+export interface ScenarioScore {
+  /** 0..100 score combining typeface legibility and color contrast. */
+  overall: number;
+  grade: Grade;
+  /** The contrast metric result. */
+  contrast: MetricResult;
+}
+
+export interface FontAccessibilityScore {
+  /** Typeface-only score: independent of color choice. */
+  typeface: TypefaceScore;
+  /**
+   * Scenario score: typeface + contrast. Only present when foreground and
+   * background colors were provided in ScoreContext.
+   */
+  scenario: ScenarioScore | null;
   /** Always-present honesty notes. The UI should surface at least one. */
   caveats: string[];
 }

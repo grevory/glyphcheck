@@ -8,6 +8,8 @@ export type {
   GlyphRasterizer,
   Bitmap,
   Grade,
+  TypefaceScore,
+  ScenarioScore,
   FontAccessibilityScore,
   OpenTypeFont,
 } from './types.js';

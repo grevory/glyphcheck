@@ -2,6 +2,8 @@
 
 import type {
   FontAccessibilityScore,
+  TypefaceScore,
+  ScenarioScore,
   MetricResult,
   OpenTypeFont,
   ScoreContext,
@@ -27,23 +29,28 @@ export function grade(overall: number): Grade {
   return 'F';
 }
 
-export function composeScore(metrics: MetricResult[]): FontAccessibilityScore {
+/** Weighted average of scored metrics, scaled to 0..100. */
+export function composeScore(metrics: MetricResult[]): { overall: number; grade: Grade } {
   const scored = metrics.filter((m) => m.score != null && m.status !== 'na');
   const wsum = scored.reduce((s, m) => s + m.weight, 0) || 1;
   const overall = Math.round(
     (100 * scored.reduce((s, m) => s + (m.score as number) * m.weight, 0)) / wsum,
   );
-  return { overall, grade: grade(overall), metrics, caveats: CAVEATS };
+  return { overall, grade: grade(overall) };
 }
 
 /**
  * Score a parsed opentype.js font. Pass colors in `ctx` to include contrast,
  * and a `rasterize` function to include character disambiguation.
+ *
+ * Returns a `FontAccessibilityScore` with two sub-scores:
+ * - `typeface`: heuristic score over glyph properties only, independent of color.
+ * - `scenario`: typeface + WCAG contrast, only present when fg/bg colors are provided.
  */
 export function scoreFont(font: OpenTypeFont, ctx: ScoreContext = {}): FontAccessibilityScore {
-  const metrics: MetricResult[] = [xHeightMetric(font), numeralsMetric(font)];
+  const typefaceMetrics: MetricResult[] = [xHeightMetric(font), numeralsMetric(font)];
 
-  metrics.push(
+  typefaceMetrics.push(
     ctx.rasterize
       ? scoreDisambiguation(font, ctx.rasterize)
       : naMetric(
@@ -54,8 +61,24 @@ export function scoreFont(font: OpenTypeFont, ctx: ScoreContext = {}): FontAcces
         ),
   );
 
-  const c = contrastMetric(ctx);
-  if (c) metrics.push(c);
+  const { overall: typefaceOverall, grade: typefaceGrade } = composeScore(typefaceMetrics);
+  const typeface: TypefaceScore = {
+    overall: typefaceOverall,
+    grade: typefaceGrade,
+    metrics: typefaceMetrics,
+  };
 
-  return composeScore(metrics);
+  const contrastResult = contrastMetric(ctx);
+  let scenario: ScenarioScore | null = null;
+  if (contrastResult) {
+    // Scenario score: 70% typeface + 30% contrast (contrast weight matches METRIC_WEIGHTS.colorContrast / total)
+    const scenarioOverall = Math.round(0.7 * typefaceOverall + 0.3 * (contrastResult.score ?? 0) * 100);
+    scenario = {
+      overall: scenarioOverall,
+      grade: grade(scenarioOverall),
+      contrast: contrastResult,
+    };
+  }
+
+  return { typeface, scenario, caveats: CAVEATS };
 }
