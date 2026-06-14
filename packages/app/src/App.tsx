@@ -24,6 +24,7 @@ import { FONT_BY_ID, type FontEntry } from './data/fonts';
 import { DEFAULT_STATE, stateFromUrl, encodeState, type AppState } from './lib/urlState';
 import { LEGIBILITY_WEIGHTS } from './lib/legibility';
 import { trackFontSelected, trackCustomFontUploaded, trackTabChanged, trackResultShared } from './analytics';
+import { measureUploadedFont } from './lib/measureFont';
 
 const TABS = [
   { label: 'Disambiguation' },
@@ -93,7 +94,12 @@ export default function App() {
       const fam = 'UP' + Date.now();
       const url = URL.createObjectURL(file);
       const ff = new FontFace(fam, `url(${url})`);
-      await ff.load();
+      await Promise.race([
+        ff.load(),
+        new Promise<never>((_, reject) =>
+          setTimeout(() => reject(new Error('Font load timed out')), 8000)
+        ),
+      ]);
       document.fonts.add(ff);
       const font: FontEntry = {
         id: fam,
@@ -111,6 +117,9 @@ export default function App() {
       const slot = `font_${String.fromCharCode(97 + s.activeFonts.length)}`;
       trackCustomFontUploaded(slot, file.name, Math.round(file.size / 1024));
       trackFontSelected(slot, font.name, 'custom');
+      file.arrayBuffer().then((buf) => measureUploadedFont(buf)).then((result) => {
+        handleMetricsReady(fam, { ...font, metrics: result.metrics, feat: result.feat });
+      }).catch((err) => { console.warn('measureUploadedFont failed:', err); });
     } catch {
       setSnack('Could not read that font file.');
     }

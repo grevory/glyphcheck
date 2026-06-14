@@ -60,6 +60,17 @@ export interface MeasureResult {
 
 const _cache = new Map<string, Promise<MeasureResult>>();
 
+export async function measureUploadedFont(buffer: ArrayBuffer): Promise<MeasureResult> {
+  const font = opentype.parse(buffer);
+  const { typeface } = scoreFont(font, { rasterize: canvasRasterizer });
+  return {
+    metrics: mapMetrics(typeface.metrics),
+    feat: mapFeatures(font),
+    overall: typeface.overall,
+    typefaceScore: { overall: typeface.overall, grade: typeface.grade },
+  };
+}
+
 export function measureGoogleFont(family: string): Promise<MeasureResult> {
   if (_cache.has(family)) return _cache.get(family)!;
 
