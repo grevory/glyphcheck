@@ -1,8 +1,16 @@
-function hexToRgb(hex: string): [number, number, number] {
-  let h = hex.replace('#', '').trim();
-  if (h.length === 3) h = h.split('').map((c) => c + c).join('');
-  const n = parseInt(h, 16);
-  return [(n >> 16) & 255, (n >> 8) & 255, n & 255];
+import { contrastRatio, parseHex, type RGB } from '@glyphcheck/score';
+import { APCAcontrast, sRGBtoY } from 'apca-w3';
+
+// Colors can arrive from a shared permalink, so an unparseable value must not
+// crash the rail. Fall back to black, which is what the previous hand-rolled
+// parser produced for invalid input.
+const BLACK: RGB = { r: 0, g: 0, b: 0 };
+function toRgb(hex: string): RGB {
+  try {
+    return parseHex(hex);
+  } catch {
+    return BLACK;
+  }
 }
 
 export function clampHex(hex: string): string | null {
@@ -10,20 +18,8 @@ export function clampHex(hex: string): string | null {
   return hex[0] === '#' ? hex : '#' + hex;
 }
 
-function relLuminance(hex: string): number {
-  const c = hexToRgb(hex).map((v) => {
-    const s = v / 255;
-    return s <= 0.03928 ? s / 12.92 : Math.pow((s + 0.055) / 1.055, 2.4);
-  });
-  return 0.2126 * c[0] + 0.7152 * c[1] + 0.0722 * c[2];
-}
-
 export function wcagRatio(fg: string, bg: string): number {
-  const L1 = relLuminance(fg);
-  const L2 = relLuminance(bg);
-  const hi = Math.max(L1, L2);
-  const lo = Math.min(L1, L2);
-  return (hi + 0.05) / (lo + 0.05);
+  return contrastRatio(toRgb(fg), toRgb(bg));
 }
 
 export interface WcagReport {
@@ -49,32 +45,15 @@ export function wcagReport(fg: string, bg: string): WcagReport {
   };
 }
 
-const APCA_S = [0.2126729, 0.7151522, 0.072175];
-
-function apcaY(hex: string): number {
-  const [r, g, b] = hexToRgb(hex).map((v) => Math.pow(v / 255, 2.4));
-  return APCA_S[0] * r + APCA_S[1] * g + APCA_S[2] * b;
-}
-
+/**
+ * Signed APCA Lc: positive for dark text on a light background, negative for
+ * light on dark. The score library's `apcaLc` returns only the magnitude, and
+ * the rail shows polarity, so this calls the reference implementation directly.
+ */
 export function apcaLc(txtHex: string, bgHex: string): number {
-  let Ytxt = apcaY(txtHex);
-  let Ybg = apcaY(bgHex);
-  const blkThrs = 0.022;
-  const blkClmp = 1.414;
-  const deltaYmin = 0.0005;
-  if (Ytxt <= blkThrs) Ytxt += Math.pow(blkThrs - Ytxt, blkClmp);
-  if (Ybg <= blkThrs) Ybg += Math.pow(blkThrs - Ybg, blkClmp);
-  if (Math.abs(Ybg - Ytxt) < deltaYmin) return 0;
-  let SAPC: number;
-  let out: number;
-  if (Ybg > Ytxt) {
-    SAPC = (Math.pow(Ybg, 0.56) - Math.pow(Ytxt, 0.57)) * 1.14;
-    out = SAPC < 0.001 ? 0 : (SAPC - 0.027) * 100;
-  } else {
-    SAPC = (Math.pow(Ybg, 0.65) - Math.pow(Ytxt, 0.62)) * 1.14;
-    out = SAPC > -0.001 ? 0 : (SAPC + 0.027) * 100;
-  }
-  return out;
+  const t = toRgb(txtHex);
+  const b = toRgb(bgHex);
+  return Number(APCAcontrast(sRGBtoY([t.r, t.g, t.b]), sRGBtoY([b.r, b.g, b.b])));
 }
 
 export interface ApcaGuide {
